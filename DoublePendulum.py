@@ -59,3 +59,32 @@ solutions = sm.solve([LE1, LE2], the1_dd, the2_dd)
 LEF1 = sm.lambdify((the1, the2, the1_d, the2_d, t, m_1, m_2, g), solutions[the1_dd])
 LEF2 = sm.lambdify((the1, the2, the1_d, the2_d, t, m_1, m_2, g), solutions[the2_dd])
 
+# Function representing the system of first-order ODEs
+def system_of_odes(y, t, m_1, m_2, g):
+    the1, the1_d, the2, the2_d = y
+
+    the1_dd = LEF1(the1, the2, the1_d, the2_d, t, m_1, m_2, g)
+    the2_dd = LEF2(the1, the2, the1_d, the2_d, t, m_1, m_2, g)
+
+    return [the1_d, the1_dd, the2_d, the2_dd]
+
+# Time points for numerical solution
+time_points = np.linspace(0, 40, 1001)
+
+# Solve the system of ODEs
+solution = odeint(system_of_odes, initial_conditions, time_points, args=(m1_val, m2_val, g_val))
+
+# Extract position and velocity from the solution
+the1_sol = solution[:, 0]
+the1_d_sol = solution[:, 1]
+
+the2_sol = solution[:, 2]
+the2_d_sol = solution[:, 3]
+
+x1_pendulum = np.sin(the1_sol)
+y1_pendulum = -np.cos(the1_sol)
+
+x2_pendulum = x1_pendulum + np.sin(the2_sol)
+y2_pendulum = y1_pendulum + -np.cos(the2_sol)
+
+

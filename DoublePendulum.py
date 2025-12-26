@@ -33,3 +33,29 @@ the2_dd = sm.diff(the2_d, t) # Angular Acceleration
 
 x2_d = sm.diff(x2, t)
 y2_d = sm.diff(y2, t)
+
+# -------  Defining Energies & Lagrange ------- #
+
+T_1 = 1/2 * m_1 * ((x1_d)**2+(y1_d)**2)
+T_2 = 1/2 * m_2 * ((x2_d)**2+(y2_d)**2)
+V_1 = m_1 * g * y1
+V_2 = m_2 * g * y2
+L = T_1 + T_2 - (V_2 + V_1)
+
+
+
+# -------  Defining Lagrange's Equations ------- #
+
+LE1 = sm.diff(sm.diff(L, the1_d), t) - sm.diff(L, the1) # use .simplyfy() if necessary
+LE2 = sm.diff(sm.diff(L, the2_d), t) - sm.diff(L, the2) # use .simplyfy() if necessary
+
+LE1 = LE1.simplify()
+LE2 = LE2.simplify()
+
+
+# -------  Solving the System of Equations & Lambdifying ------- #
+
+solutions = sm.solve([LE1, LE2], the1_dd, the2_dd)
+LEF1 = sm.lambdify((the1, the2, the1_d, the2_d, t, m_1, m_2, g), solutions[the1_dd])
+LEF2 = sm.lambdify((the1, the2, the1_d, the2_d, t, m_1, m_2, g), solutions[the2_dd])
+

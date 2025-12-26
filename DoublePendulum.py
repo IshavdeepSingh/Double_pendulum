@@ -87,4 +87,36 @@ y1_pendulum = -np.cos(the1_sol)
 x2_pendulum = x1_pendulum + np.sin(the2_sol)
 y2_pendulum = y1_pendulum + -np.cos(the2_sol)
 
+# -------  Animating the solutions ------- #
+
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+
+
+fig, ax = plt.subplots()
+ax.set_xlim(-2.5, 2.5)
+ax.set_ylim(-2.5, 1)
+plt.grid()
+
+
+def update(frame):
+    
+    pendulum1.set_data([0, x1_pendulum[frame]], [0, y1_pendulum[frame]])
+    mass1.set_data([x1_pendulum[frame]], [y1_pendulum[frame]])
+
+    pendulum2.set_data([x1_pendulum[frame], x2_pendulum[frame]], [y1_pendulum[frame], y2_pendulum[frame]])
+    mass2.set_data([x2_pendulum[frame]], [y2_pendulum[frame]])
+
+    return pendulum1, mass1, pendulum2, mass2
+
+pendulum1, = ax.plot([0, x1_pendulum[0]], [0, y1_pendulum[0]], lw=2)
+mass1, = ax.plot([x1_pendulum[0]], [y1_pendulum[0]], 'o', markersize=4*int(m1_val)+1, color='red')
+
+pendulum2, = ax.plot([x1_pendulum[0], x2_pendulum[0]], [y1_pendulum[0], y2_pendulum[0]], lw=2)
+mass2, = ax.plot([x2_pendulum[0]], [y2_pendulum[0]], 'o', markersize=4*int(m2_val)+1, color='red')
+
+animation = FuncAnimation(fig, update, frames=len(time_points), interval=25, blit=True)
+
+plt.show()
+
 
